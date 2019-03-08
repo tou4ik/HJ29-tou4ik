@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
          commentsMarkerCheckboxOn = document.querySelector('.menu__toggle-title_on'),
          commentsMarkerCheckboxOff = document.querySelector('.menu__toggle-title_off'),
          toggleOn = document.querySelector('#comments-on'),
+         menuItems = document.querySelectorAll('.menu__item'),
+         wrap = document.querySelectorAll('.wrap'),
          toggleOff = document.querySelector('#comments-off');
 
    let host,
@@ -86,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
       minX = wrapApp.offsetLeft;
       minY = wrapApp.offsetTop;
 
-      maxX = wrapApp.offsetLeft + wrapApp.offsetWidth - movedPiece.offsetWidth;
-      maxY = wrapApp.offsetTop + wrapApp.offsetHeight - movedPiece.offsetHeight;
+      maxX = wrapApp.offsetLeft + wrapApp.offsetWidth - menu.offsetWidth - 1;
+      maxY = wrapApp.offsetTop + wrapApp.offsetHeight - menu.offsetHeight;
 
       shiftX = event.pageX - event.target.getBoundingClientRect().left - window.pageXOffset;
       shiftY = event.pageY - event.target.getBoundingClientRect().top - window.pageYOffset;
@@ -98,6 +100,8 @@ document.addEventListener('DOMContentLoaded', function () {
          return;
       }
 
+      event.preventDefault();
+
       let x = event.pageX - shiftX;
       let y = event.pageY - shiftY;
       x = Math.min(x, maxX);
@@ -106,6 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
       y = Math.max(y, minY);
       movedPiece.style.left = x + 'px';
       movedPiece.style.top = y + 'px';
+
+      checkMenuPosition()
    }
 
    function drop(event) {
@@ -113,6 +119,16 @@ document.addEventListener('DOMContentLoaded', function () {
          movedPiece = null;
       }
    }
+   // Проверка позиции блока меню
+   function checkMenuPosition() {
+      if (menu.offsetHeight > 65) {
+        let wid = 2;
+        menuItems.forEach(elem => {
+          wid += elem.offsetWidth;
+        });
+        menu.style.left = wrap.offsetWidth - wid + 'px';
+      }
+    }
 
    function throttle(callback) {
       let isWaiting = false;
@@ -162,6 +178,10 @@ document.addEventListener('DOMContentLoaded', function () {
       document.querySelector('#fileInput').addEventListener('change', event => {
          const files = Array.from(event.currentTarget.files);
          sendFile(files);
+         removeForm();
+         ctx.clearRect(0, 0, canvas.width, canvas.height);
+         sendMaskState();
+         curves = [];
       });
 
       input.click();
@@ -702,13 +722,7 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    function tick() {
-
-      //Двигаем меню если оно находится с края окна и не помещается при развертывании
-
-      if (menu.offsetHeight > 66) {
-         menu.style.left = (wrapApp.offsetWidth - menu.offsetWidth) - 10 + 'px';
-      }
-
+      
       //Отрисовываем
 
       if (needsRepaint) {
