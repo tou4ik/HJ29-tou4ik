@@ -1,33 +1,33 @@
 document.addEventListener('DOMContentLoaded', function () {
 
    const urlApi = 'https://neto-api.herokuapp.com',
-         urlWss = 'wss://neto-api.herokuapp.com/pic',
-         errorFileType = 'Неверный формат файла. Пожалуйста, выберите изображение в формате .jpg или .png.',
-         errorMoreDrag = 'Чтобы загрузить новое изображение, пожалуйста, воспользуйтесь пунктом "Загрузить новое" в меню',
-         wrapCommentsCanvas = document.createElement('div'),
-         canvas = document.createElement('canvas'),
-         error = document.querySelector('.error'),
-         menu = document.querySelector('.menu'),
-         menuBurger = menu.querySelector('.burger'),
-         menuСomments = menu.querySelector('.comments'),
-         menuDraw = menu.querySelector('.draw'),
-         menuNewPic = menu.querySelector('.new'),
-         menuUrl = menu.querySelector('.menu__url'),
-         currentImage = document.querySelector('.current-image'),
-         loader = document.querySelector('.image-loader'),
-         wrapApp = document.querySelector('.app'),
-         formsComments = document.querySelector('.comments__form'),
-         commentsMarkerCheckboxOn = document.querySelector('.menu__toggle-title_on'),
-         commentsMarkerCheckboxOff = document.querySelector('.menu__toggle-title_off'),
-         toggleOn = document.querySelector('#comments-on'),
-         menuItems = document.querySelectorAll('.menu__item'),
-         wrap = document.querySelectorAll('.wrap'),
-         toggleOff = document.querySelector('#comments-off');
+      urlWss = 'wss://neto-api.herokuapp.com/pic',
+      errorFileType = 'Неверный формат файла. Пожалуйста, выберите изображение в формате .jpg или .png.',
+      errorMoreDrag = 'Чтобы загрузить новое изображение, пожалуйста, воспользуйтесь пунктом "Загрузить новое" в меню',
+      wrapCommentsCanvas = document.createElement('div'),
+      canvas = document.createElement('canvas'),
+      error = document.querySelector('.error'),
+      menu = document.querySelector('.menu'),
+      menuBurger = menu.querySelector('.burger'),
+      menuСomments = menu.querySelector('.comments'),
+      menuDraw = menu.querySelector('.draw'),
+      menuNewPic = menu.querySelector('.new'),
+      menuUrl = menu.querySelector('.menu__url'),
+      currentImage = document.querySelector('.current-image'),
+      loader = document.querySelector('.image-loader'),
+      wrapApp = document.querySelector('.app'),
+      formsComments = document.querySelector('.comments__form'),
+      commentsMarkerCheckboxOn = document.querySelector('.menu__toggle-title_on'),
+      commentsMarkerCheckboxOff = document.querySelector('.menu__toggle-title_off'),
+      toggleOn = document.querySelector('#comments-on'),
+      menuItems = document.querySelectorAll('.menu__item'),
+      wrap = document.querySelectorAll('.wrap'),
+      toggleOff = document.querySelector('#comments-off');
 
    let host,
-       dataGetParse,
-       showComments = {},
-       count = 0;
+      dataGetParse,
+      showComments = {},
+      count = 0;
 
    //Удаляем разнирение файлов
 
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
    let shiftY = 0;
 
    function dragStart(event) {
-      if (!event.target.classList.contains('drag')){
+      if (!event.target.classList.contains('drag')) {
          return;
       }
 
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    function drag(event) {
-      if (!movedPiece){
+      if (!movedPiece) {
          return;
       }
 
@@ -122,13 +122,13 @@ document.addEventListener('DOMContentLoaded', function () {
    // Проверка позиции блока меню
    function checkMenuPosition() {
       if (menu.offsetHeight > 65) {
-        let wid = 2;
-        menuItems.forEach(elem => {
-          wid += elem.offsetWidth;
-        });
-        menu.style.left = wrap.offsetWidth - wid + 'px';
+         let wid = 2;
+         menuItems.forEach(elem => {
+            wid += elem.offsetWidth;
+         });
+         menu.style.left = wrap.offsetWidth - wid + 'px';
       }
-    }
+   }
 
    function throttle(callback) {
       let isWaiting = false;
@@ -226,10 +226,10 @@ document.addEventListener('DOMContentLoaded', function () {
       loader.removeAttribute('style');
 
       fetch(`${urlApi}/pic`, {
-         body: formData,
-         credentials: 'same-origin',
-         method: 'POST'
-      })
+            body: formData,
+            credentials: 'same-origin',
+            method: 'POST'
+         })
          .then(res => {
             if (res.status >= 200 && res.status < 300) {
                return res;
@@ -247,10 +247,12 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    //Удаляем комментарии при загрузке изображения
-   
+
    function removeForm() {
       const formComment = wrapApp.querySelectorAll('.comments__form');
-      Array.from(formComment).forEach(item => { item.remove() })
+      Array.from(formComment).forEach(item => {
+         item.remove()
+      })
    }
 
    //Получаем информацию о файле
@@ -310,7 +312,9 @@ document.addEventListener('DOMContentLoaded', function () {
       menu.dataset.state = 'default';
 
       Array.from(menu.querySelectorAll('.mode')).forEach(modeItem => {
-         if (!modeItem.classList.contains('comments')) { return; }
+         if (!modeItem.classList.contains('comments')) {
+            return;
+         }
 
          menu.dataset.state = 'selected';
          modeItem.dataset.state = 'selected';
@@ -325,7 +329,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
    /*БЛОК КОММЕНТАРИЕВ*/
 
-   canvas.addEventListener('click', checkComment);
+   canvas.addEventListener('click', function () {
+      const commentBody = document.querySelector('.comments__body');
+      if (wrapCommentsCanvas.childNodes.length < 2 || commentBody.childNodes.length > 9) {
+         checkComment();
+      } else {
+         alert('У Вас уже есть пустой комментарий!');
+      }
+   });
 
    commentsMarkerCheckboxOn.addEventListener('click', markerCheckboxOn);
    commentsMarkerCheckboxOff.addEventListener('click', markerCheckboxOff);
@@ -347,7 +358,9 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    function checkComment() {
-      if (!(menuСomments.dataset.state === 'selected') || !wrapApp.querySelector('#comments-on').checked) { return; }
+      if (!(menuСomments.dataset.state === 'selected') || !wrapApp.querySelector('#comments-on').checked) {
+         return;
+      }
       wrapCommentsCanvas.appendChild(createCommentForm(event.offsetX, event.offsetY));
    }
 
@@ -427,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		left: ${left}px;
 		z-index: 2;
       `;
-      
+
       formComment.dataset.left = left;
       formComment.dataset.top = top;
 
@@ -448,8 +461,12 @@ document.addEventListener('DOMContentLoaded', function () {
       //Отправка сообжения по нажатию Ctrl + Enter
 
       function keySendMessage(event) {
-         if (event.repeat) { return; }
-         if (!event.ctrlKey) { return; }
+         if (event.repeat) {
+            return;
+         }
+         if (!event.ctrlKey) {
+            return;
+         }
 
          switch (event.code) {
             case 'Enter':
@@ -471,12 +488,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       function commentsSend(message) {
          fetch(`${urlApi}/pic/${dataGetParse.id}/comments`, {
-            method: 'POST',
-            body: message,
-            headers: {
-               'Content-Type': 'application/x-www-form-urlencoded'
-            },
-         })
+               method: 'POST',
+               body: message,
+               headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+               },
+            })
             .then(res => {
                if (res.status >= 200 && res.status < 300) {
                   return res;
@@ -558,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    let connection;
+
    function wss() {
       connection = new WebSocket(`${urlWss}/${dataGetParse.id}`);
       connection.addEventListener('message', event => {
@@ -596,14 +614,16 @@ document.addEventListener('DOMContentLoaded', function () {
    });
 
    //Получаем id из ссылки
-   
+
    let urlString = `${window.location.href}`;
    let url = new URL(urlString);
    let paramId = url.searchParams.get('id');
    urlId();
 
    function urlId() {
-      if (!paramId) { return; }
+      if (!paramId) {
+         return;
+      }
       setReview(paramId);
       showMenuComments()
    }
@@ -623,10 +643,10 @@ document.addEventListener('DOMContentLoaded', function () {
    });
 
    const ctx = canvas.getContext('2d'),
-         BRUSH_RADIUS = 4;
+      BRUSH_RADIUS = 4;
    let curves = [],
-       drawing = false,
-       needsRepaint = false;
+      drawing = false,
+      needsRepaint = false;
 
    function circle(point) {
       ctx.beginPath();
@@ -722,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    function tick() {
-      
+
       //Отрисовываем
 
       if (needsRepaint) {
@@ -737,5 +757,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
    //Закрываем соединение при уходе со страницы
 
-   window.addEventListener('beforeunload', () => { connection.close() });
+   window.addEventListener('beforeunload', () => {
+      connection.close()
+   });
 });
